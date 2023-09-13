@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simple Form Validation</title>
+  <style>
+    /* http://meyerweb.com/eric/tools/css/reset/ 
+    v2.0 | 20110126
+    License: none (public domain)
+ */
+
+    html,
+    body,
+    div,
+    span,
+    applet,
+    object,
+    iframe,
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    p,
+    blockquote,
+    pre,
+    a,
+    abbr,
+    acronym,
+    address,
+    big,
+    cite,
+    code,
+    del,
+    dfn,
+    em,
+    img,
+    ins,
+    kbd,
+    q,
+    s,
+    samp,
+    small,
+    strike,
+    strong,
+    sub,
+    sup,
+    tt,
+    var,
+    b,
+    u,
+    i,
+    center,
+    dl,
+    dt,
+    dd,
+    ol,
+    ul,
+    li,
+    fieldset,
+    form,
+    label,
+    legend,
+    table,
+    caption,
+    tbody,
+    tfoot,
+    thead,
+    tr,
+    th,
+    td,
+    article,
+    aside,
+    canvas,
+    details,
+    embed,
+    figure,
+    figcaption,
+    footer,
+    header,
+    hgroup,
+    menu,
+    nav,
+    output,
+    ruby,
+    section,
+    summary,
+    time,
+    mark,
+    audio,
+    video {
+      margin: 0;
+      padding: 0;
+      border: 0;
+      font-size: 100%;
+      font: inherit;
+      vertical-align: baseline;
+    }
+
+    /* HTML5 display-role reset for older browsers */
+    article,
+    aside,
+    details,
+    figcaption,
+    figure,
+    footer,
+    header,
+    hgroup,
+    menu,
+    nav,
+    section {
+      display: block;
+    }
+
+    body {
+      line-height: 1;
+    }
+
+    ol,
+    ul {
+      list-style: none;
+    }
+
+    blockquote,
+    q {
+      quotes: none;
+    }
+
+    blockquote:before,
+    blockquote:after,
+    q:before,
+    q:after {
+      content: '';
+      content: none;
+    }
+
+    table {
+      border-collapse: collapse;
+      border-spacing: 0;
+    }
+  </style>
+  <style>
+    body {
+      width: 100%;
+      height: 100vh;
+      background-color: hsl(217, 56%, 8%);
+      color: white;
+      margin: auto;
+    }
+
+    h1 {
+      font-size: larger;
+    }
+
+    .errors {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+      margin: 1rem 1rem;
+      padding: 1rem;
+      width: 360px;
+      background-color: hsl(1, 79%, 15%);
+      border: 1px groove white;
+    }
+
+    .form {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+      margin: 1.8rem 1rem;
+      padding: 1rem;
+      width: 360px;
+      background-color: hsl(218, 79%, 15%);
+      border: 1px groove white;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .field input {
+      margin-top: 8px;
+    }
+
+    .submited {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+      padding: 1rem;
+      width: 320px;
+      background-color: hsl(123, 53%, 23%);
+      border: 1px groove white;
+    }
+
+    #hidden {
+      display: none;
+    }
+
+
+    @media (max-width: 600px) {
+
+      .errors {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+        margin: 1.8rem 0.4rem;
+        padding: 1rem;
+        width: 85%;
+        background-color: hsl(1, 79%, 15%);
+        border: 1px groove white;
+      }
+
+      .form {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+        margin: 1.8rem 0.4rem;
+        padding: 1rem;
+        width: 85%;
+        background-color: hsl(218, 79%, 15%);
+        border: 1px groove white;
+      }
+
+      .submited {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+        padding: 1rem;
+        width: 85%;
+        background-color: hsl(123, 53%, 23%);
+        border: 1px groove white;
+      }
+
+    }
+  </style>
+  <!-- <script src="script.js" defer></script> -->
+</head>
+
+<body>
+
+  <div id="hidden" class="errors">
+    <ul class="errors__ul">
+
+    </ul>
+  </div>
+
+  <form action="" class="form">
+    <h1> SIMPLE FORM VALIDATION</h1>
+    <div class="form__username field">
+      <label for="username"> Type your username</label>
+      <input type="text" id="username" name="username">
+    </div>
+
+    <div class="form__pass field">
+      <label for="pass"> Type your password</label>
+      <input type="password" id="pass" name="pass">
+    </div>
+
+    <div class="form__passconfirm field">
+      <label for="passconfirm"> Confirm your password</label>
+      <input type="password" id="passconfirm" name="passconfirm">
+    </div>
+
+    <div class="terms">
+      <input id="terms__checkbox" name="terms__checkbox" type="checkbox"> Agree to terms?
+    </div>
+
+    <button id="btn_submit" name="btn_submit" type="submit"> Submit </button>
+
+    <div id="hidden" class="submited">
+      <h2></h2>
+    </div>
+  </form>
+
+  <script>
+    const form = document.querySelector('.form');
+    const username = document.querySelector('#username');
+    const password = document.querySelector('#pass');
+    const password_confirm = document.querySelector('#passconfirm');
+    const terms = document.querySelector('#terms__checkbox');
+    const btn_submit = document.querySelector('#btn_submit');
+    const submited_info = document.querySelector('.submited');
+    const errors = document.querySelector('.errors');
+    const errorslist = document.querySelector('.errors__ul');
+
+    class User {
+
+      constructor(username, password, agreedterms) {
+        this.username = username;
+        this.password = password;
+        this.agreedterms = agreedterms;
+      }
+    }
+
+    document.querySelectorAll('input').forEach((inputfield) => {
+      inputfield.addEventListener('keydown', (e) => {
+        if (e.code === 'Space' || e.key === ' ') {
+          e.preventDefault();
+        }
+      });
+    });
+
+
+    function validate(username, password, password_confirm, terms) {
+      errors.removeAttribute('id', 'hidden');
+      errorslist.innerHTML = '';
+
+
+      if (username.value === '' || username.value.trim() === '') {
+        const li = document.createElement('li');
+        li.textContent = "Username is empty";
+        errorslist.appendChild(li);
+      }
+
+      if (username.value.length < 6) {
+        const li = document.createElement('li');
+        li.textContent = "Username must be at least 6 characters";
+        errorslist.appendChild(li);
+      }
+
+      if (password.value === '' || password.value.trim() === '') {
+        const li = document.createElement('li');
+        li.textContent = "Password is empty";
+        errorslist.appendChild(li);
+      }
+
+      if (password.value.length < 6) {
+        const li = document.createElement('li');
+        li.textContent = "Password must have at least 6 characters";
+        errorslist.appendChild(li);
+      }
+
+      if (password.value !== password_confirm.value) {
+        const li = document.createElement('li');
+        li.textContent = "Passwords do not match";
+        errorslist.appendChild(li);
+      }
+
+      if (!terms.checked) {
+        const li = document.createElement('li');
+        li.textContent = "Please agree to the terms and conditions";
+        errorslist.appendChild(li);
+      }
+    }
+
+    btn_submit.addEventListener('click', (e) => {
+      e.preventDefault();
+
+      validate(username, password, password_confirm, terms);
+
+      if (errorslist.children.length === 0) {
+        const user = new User(username.value, password.value, terms.checked);
+
+        errors.setAttribute('id', 'hidden')
+        btn_submit.setAttribute('id', 'hidden')
+        submited_info.removeAttribute('id', 'hidden')
+        submited_info.firstChild.textContent = `You successfully submitted the user: ${username.value}`;
+      }
+    });
+
+
+
+
+
+
+
+  </script>
+</body>
+
+</html>
